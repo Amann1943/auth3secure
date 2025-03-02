@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth3 Guard - Simple Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        .btn:disabled {
+            background: #cccccc;
+        }
+        #accountArea {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background: #f2dede;
+            color: #a94442;
+        }
+        #willForm {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+        .beneficiary {
+            margin-bottom: 10px;
+        }
+        .beneficiary input {
+            margin-right: 10px;
+            padding: 5px;
+            width: 150px;
+        }
+        #inactivityPeriod {
+            margin-bottom: 10px;
+        }
+        #inactivityPeriod input {
+            padding: 5px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Auth3 Guard Demo</h1>
+        <div id="accountArea">
+            <p>Account: <span id="selectedAccount">Not connected</span></p>
+            <p>Balance: <span id="balance">-</span></p>
+        </div>
+        <button id="connectBtn" class="btn">Connect MetaMask</button>
+        <button id="registerBtn" class="btn" disabled>Register</button>
+        <button id="loginBtn" class="btn" disabled>Login with Biometrics</button>
+        <button id="transactBtn" class="btn" disabled>Make Transaction</button>
+        <button id="willBtn" class="btn" disabled>Create Decentralized Will</button>
+        <div id="willForm">
+            <h3>Create Decentralized Will</h3>
+            <div id="inactivityPeriod">
+                <label>If wallet is inactive for </label>
+                <input type="number" id="inactivityMonths" min="1" placeholder="Months" /> 
+                <label> months, transfer assets to beneficiaries.</label>
+            </div>
+            <h4>Add Beneficiaries</h4>
+            <div id="beneficiaries"></div>
+            <button id="addBeneficiaryBtn" class="btn">Add Another Beneficiary</button>
+            <button id="submitWillBtn" class="btn">Submit Will</button>
+        </div>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let selectedAccount;
+        let isRegistered = false;
+        let isLoggedIn = false;
+        let beneficiaries = [];
+        let wills = {}; // Local storage for wills (simulating smart contract)
+
+        function updateStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'error' : 'success';
+        }
+
+        // Simple address validation without Ethers.js
+        function isValidAddress(address) {
+            return /^0x[a-fA-F0-9]{40}$/.test(address);
+        }
+
+        async function connect() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    selectedAccount = accounts[0];
+                    document.getElementById('selectedAccount').textContent = 
+                        selectedAccount.substring(0, 6) + '...' + selectedAccount.substring(38);
+                    
+                    // Get and display balance using MetaMask API
+                    const balance = await window.ethereum.request({
+                        method: 'eth_getBalance',
+                        params: [selectedAccount, 'latest']
+                    });
+                    const ethBalance = parseInt(balance, 16) / 1e18;
+                    document.getElementById('balance').textContent = ethBalance.toFixed(4) + ' ETH';
+
+                    // Enable register button
+                    document.getElementById('registerBtn').disabled = false;
+                    updateStatus('Wallet connected successfully!');
+                } catch (error) {
+                    updateStatus('Failed to connect wallet: ' + error.message, true);
+                }
+            } else {
+                updateStatus('Please install MetaMask!', true);
+            }
+        }
+
+        async function register() {
+            try {
+                // Simulate registration process
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
+                isRegistered = true;
+                document.getElementById('loginBtn').disabled = false;
+                updateStatus('Registration successful! You can now login.');
+            } catch (error) {
+                updateStatus('Registration failed: ' + error.message, true);
+            }
+        }
+
+        async function login() {
+            try {
+                // Simulate biometric verification
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
+                isLoggedIn = true;
+                document.getElementById('transactBtn').disabled = false;
+                document.getElementById('willBtn').disabled = false;
+                updateStatus('Login successful! You can now make transactions or create a will.');
+            } catch (error) {
+                updateStatus('Login failed: ' + error.message, true);
+            }
+        }
+
+        async function makeTransaction() {
+            try {
+                // Simulate transaction
+                const transactionParameters = {
+                    to: '0x0000000000000000000000000000000000000000',
+                    from: selectedAccount,
+                    value: '0x0' // 0 ETH
+                };
+
+                await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [transactionParameters],
+                });
+
+                updateStatus('Transaction initiated! Check MetaMask for confirmation.');
+            } catch (error) {
+                updateStatus('Transaction failed: ' + error.message, true);
+            }
+        }
+
+        function showWillForm() {
+            if (!isLoggedIn) {
+                updateStatus('Login first to create a will!', true);
+                return;
+            }
+            beneficiaries = [];
+            document.getElementById('beneficiaries').innerHTML = '';
+            document.getElementById('inactivityMonths').value = '';
+            addBeneficiary();
+            document.getElementById('willForm').style.display = 'block';
+            updateStatus('Add beneficiaries and set inactivity period for your decentralized will.');
+        }
+
+        function addBeneficiary() {
+            const beneficiaryDiv = document.createElement('div');
+            beneficiaryDiv.className = 'beneficiary';
+            beneficiaryDiv.innerHTML = `
+                <input type="text" placeholder="Address (0x...)" class="benAddress">
+                <input type="number" placeholder="Percentage (0-100)" min="0" max="100" class="benPercentage">
+                <input type="text" placeholder="Relation (e.g., Friend)" class="benRelation">
+            `;
+            document.getElementById('beneficiaries').appendChild(beneficiaryDiv);
+        }
+
+        async function submitWill() {
+            if (!isLoggedIn) {
+                updateStatus('Login first!', true);
+                return;
+            }
+            try {
+                const inactivityMonths = parseInt(document.getElementById('inactivityMonths').value);
+                if (isNaN(inactivityMonths) || inactivityMonths < 1) {
+                    throw new Error('Please specify a valid number of months (1 or more).');
+                }
+
+                const benElements = document.getElementsByClassName('beneficiary');
+                let totalPercentage = 0;
+                beneficiaries = [];
+
+                for (let i = 0; i < benElements.length; i++) {
+                    const address = benElements[i].querySelector('.benAddress').value;
+                    const percentage = parseInt(benElements[i].querySelector('.benPercentage').value);
+                    const relation = benElements[i].querySelector('.benRelation').value;
+
+                    if (!isValidAddress(address)) {
+                        throw new Error(`Invalid address for beneficiary ${i + 1}`);
+                    }
+                    if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                        throw new Error(`Invalid percentage for beneficiary ${i + 1}`);
+                    }
+
+                    beneficiaries.push({ address, percentage, relation });
+                    totalPercentage += percentage;
+                }
+
+                if (totalPercentage !== 100) {
+                    throw new Error('Total percentage must equal 100%');
+                }
+
+                // Simulate smart contract interaction locally
+                wills[selectedAccount] = {
+                    beneficiaries: beneficiaries,
+                    inactivityMonths: inactivityMonths,
+                    lastActivity: Date.now() // Store timestamp in milliseconds
+                };
+
+                // Simulate a transaction confirmation (optional)
+                const dummyTx = {
+                    to: selectedAccount, // Could be a contract address in real scenario
+                    from: selectedAccount,
+                    value: '0x0'
+                };
+                await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [dummyTx],
+                });
+
+                document.getElementById('willForm').style.display = 'none';
+                updateStatus(`Decentralized will created! Assets will transfer after ${inactivityMonths} months of inactivity.`);
+            } catch (error) {
+                updateStatus('Failed to create will: ' + error.message, true);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('connectBtn').addEventListener('click', connect);
+        document.getElementById('registerBtn').addEventListener('click', register);
+        document.getElementById('loginBtn').addEventListener('click', login);
+        document.getElementById('transactBtn').addEventListener('click', makeTransaction);
+        document.getElementById('willBtn').addEventListener('click', showWillForm);
+        document.getElementById('addBeneficiaryBtn').addEventListener('click', addBeneficiary);
+        document.getElementById('submitWillBtn').addEventListener('click', submitWill);
+
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+            updateStatus('Ready to connect with MetaMask!');
+        } else {
+            updateStatus('Please install MetaMask!', true);
+        }
+
+        // Listen for account changes
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                if (accounts.length === 0) {
+                    document.getElementById('selectedAccount').textContent = 'Not connected';
+                    document.getElementById('balance').textContent = '-';
+                    document.getElementById('registerBtn').disabled = true;
+                    document.getElementById('loginBtn').disabled = true;
+                    document.getElementById('transactBtn').disabled = true;
+                    document.getElementById('willBtn').disabled = true;
+                    document.getElementById('willForm').style.display = 'none';
+                    isRegistered = false;
+                    isLoggedIn = false;
+                    updateStatus('Wallet disconnected');
+                } else {
+                    connect(); // Reconnect with new account
+                }
+            });
+        }
+    </script>
+</body>
+</html>
