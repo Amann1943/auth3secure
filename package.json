@@ -1,0 +1,25 @@
+{
+    "name": "auth3-guard",
+    "version": "1.0.0",
+    "description": "Next-Gen Web3 MFA Solution",
+    "main": "index.js",
+    "scripts": {
+        "test": "hardhat test",
+        "compile": "hardhat compile",
+        "deploy": "hardhat run scripts/deploy.js",
+        "node": "hardhat node"
+    },
+    "devDependencies": {
+        "@nomiclabs/hardhat-ethers": "^2.2.3",
+        "@nomiclabs/hardhat-waffle": "^2.0.6",
+        "chai": "^4.3.7",
+        "ethereum-waffle": "^3.4.4",
+        "ethers": "^5.7.2",
+        "hardhat": "^2.19.4",
+        "hardhat-gas-reporter": "^1.0.9"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^4.9.3",
+        "dotenv": "^16.4.7"
+    }
+}
