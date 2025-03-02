@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth3 Guard - Web3 Security</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Auth3 Guard</h1>
+        <a href="register.html"><button id="connectWallet">🔗 Connect Wallet</button></a>
+        <div id="userInfo" class="info-box"></div>
+        
+        <div class="section">
+            <h2>🔒 Login with ZKP</h2>
+            <button id="loginZKP">Login with zkp</button>
+            <div id="loginStatus" class="status-box"></div>
+        </div>
+        
+        <div class="section">
+            <h2>💰 Secure Transaction</h2>
+            <input type="text" id="recipient" placeholder="Recipient Address">
+            <input type="number" id="amount" placeholder="Amount (ETH)">
+            <button id="sendTransaction">🚀 Send Secure Transaction</button>
+            <div id="transactionStatus" class="status-box"></div>
+        </div>
+        
+        <div class="section">
+            <h2>🔄 Recover Account</h2>
+            <a href="recovery.html">
+            <button id="recoverAccount">🆘 Start Recovery</button></a>
+            <div id="recoveryStatus" class="status-box"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

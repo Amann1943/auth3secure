@@ -1,0 +1,104 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    margin: auto;
+    backdrop-filter: blur(10px);
+}
+
+button {
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #ff758c, #ff7eb3);
+    transform: scale(1.05);
+}
+
+input, select {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-align: center;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+video, canvas {
+    width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: none;
+}
+
+#hashKeyDisplay {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    margin: 15px 0;
+}
+
+.guardian-entry {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+
+.guardian-entry input {
+    width: 65%;
+    margin-right: 5px;
+}
+
+.guardian-entry select {
+    width: 30%;
+}
+
+.progress-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.progress-step {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-step {
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+}
+
+.completed-step {
+    background: #4CAF50;
+}
